@@ -44,6 +44,8 @@ df1 = df1.iloc[1:]
 df1.head()
 
 df1['CMP'] = df1['CMP'].str.replace('₹','')
+df1['CMP'] = df1['CMP'].str.replace(',','')
+df1['CMP'] = df1['CMP'].str.split('.').str[0]
 df1['Prev Close'] = df1['Prev Close'].str.replace('₹','')
 df1['Change'] = df1['Change'].str.replace('₹','')
 df1.head()
@@ -52,6 +54,10 @@ df1['change_percent'] = df1['Change'].str.split(" ").str[0]
 df1.head()
 df1['change_amount'] = df1['Change'].str.split("(").str[1]
 df1['change_amount'] = df1['change_amount'].str.replace(")",'')
+
+df1['CMP'] = df1['CMP'].astype('int64')
+df1['change_percent'] = df1['change_percent'].astype('float64')
+df1['change_amount'] = df1['change_amount'].astype('float64')
 
 df1 = df1.drop(['Change'], axis=1)
 
@@ -77,3 +83,6 @@ table_name = f'top_gainers_{todays_date}'
 df1.to_sql(name=table_name, con=engine, if_exists='replace', index=False)
 
 conn.close()
+
+
+df1.dtypes
